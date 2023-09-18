@@ -26,4 +26,4 @@ async function cadastroUsuarios(req, res){
     }
 }
 
-module.exports = cadastroUsuarios;
+module.exports = { cadastroUsuarios };

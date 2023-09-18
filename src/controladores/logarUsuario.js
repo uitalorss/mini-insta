@@ -23,4 +23,4 @@ async function logarUsuario(req, res){
     return res.status(200).json({dadosUsuario, token});
 }
 
-module.exports = logarUsuario;
+module.exports = { logarUsuario };

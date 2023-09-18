@@ -14,6 +14,10 @@ class usuarios {
         return await knex("usuarios").where({username: username}).first();
     }
 
+    static async obterUsuarioPeloId(id){
+        return await knex("usuarios").where({id: id}).first();
+    }
+
     static async cadastrarUsuario(nome, avatar, username, password, email, site, bio, telefone, genero){
         return await knex("usuarios").insert({
             nome,
