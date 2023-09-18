@@ -1,4 +1,5 @@
 const knex = require("../connect");
+const usuarios = require("./usuarioRepositório");
 
 
 class postagens {
@@ -12,8 +13,6 @@ class postagens {
             return false;
         }
         return postagem;
-
-
     }
 
     static async relacionarFotosAPostagem(fotos, idPostagem){
@@ -21,6 +20,28 @@ class postagens {
             foto.postagem_id = idPostagem
         }
         return await knex("postagem_fotos").insert(fotos).returning("*");
+    }
+
+    static async obterPostagemPorId(idPostagem){
+        const postagem = await knex("postagens").where({id: idPostagem}).first();
+        return postagem;
+    }
+
+    static async verificarSeUsuarioJaCurtiu(idPostagem, idUsuario){
+        return await knex("postagem_curtidas").where({postagem_id: idPostagem}).andWhere({usuario_id: idUsuario});
+        
+    }
+
+    static async curtir(idPostagem, idUsuario){
+        const curtidasDeUsuario = await this.verificarSeUsuarioJaCurtiu(idPostagem, idUsuario);
+        if(curtidasDeUsuario.length > 0){
+            return false;
+        }
+        return await knex("postagem_curtidas").insert({postagem_id: idPostagem, usuario_id: idUsuario});
+    }
+
+    static async comentarPostagem(idPostagem, idUsuario, comentario){
+        return await knex("postagem_comentarios").insert({postagem_id: idPostagem, usuario_id: idUsuario, texto: comentario});
     }
 }
 
