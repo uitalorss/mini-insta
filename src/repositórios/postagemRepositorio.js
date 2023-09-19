@@ -1,6 +1,4 @@
 const knex = require("../connect");
-const usuarios = require("./usuarioRepositório");
-
 
 class postagens {
     static async criarPostagem(texto, fotos, idUsuario){
@@ -46,6 +44,19 @@ class postagens {
 
     static async comentar(idPostagem, idUsuario, comentario){
         return await knex("postagem_comentarios").insert({postagem_id: idPostagem, usuario_id: idUsuario, texto: comentario}).returning("*") ? true : false;
+    }
+
+    static async listar(){
+        const postagens = await knex("postagens");
+
+        for(const postagem of postagens){
+            postagem.imagens = await this.agruparFotos(postagem.id);
+        }
+        return postagens;
+    }
+
+    static async agruparFotos(idPostagem){
+        return await knex("postagem_fotos").join("postagens", "postagem_fotos.postagem_id", "postagens.id").select("imagem").where({"postagem_id": idPostagem});
     }
 }
 

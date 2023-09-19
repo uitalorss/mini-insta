@@ -6,6 +6,7 @@ const { logarUsuario } = require("../controladores/logarUsuario");
 const { fazerPostagem } = require("../controladores/fazerPostagem");
 const { curtirPostagem } = require("../controladores/curtirPostagem");
 const { comentarPostagem } = require("../controladores/comentarPostagem");
+const { listarPostagens } = require("../controladores/listarPostagens");
 
 const router = Router();
 
@@ -16,5 +17,6 @@ router.get("/usuario", autenticarUsuario, exibirUsuario);
 router.post("/post", autenticarUsuario, fazerPostagem);
 router.post("/curtir/:idPostagem", autenticarUsuario, curtirPostagem);
 router.post("/comentar/:idPostagem", autenticarUsuario, comentarPostagem);
+router.get("/feed", autenticarUsuario, listarPostagens);
 
 module.exports = {router};
