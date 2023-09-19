@@ -27,6 +27,10 @@ class postagens {
         return postagem;
     }
 
+    static async verificarPostagemValida(idPostagem){
+        return await knex("postagens").where({id: idPostagem}).first() ? true : false;
+    }
+
     static async verificarSeUsuarioJaCurtiu(idPostagem, idUsuario){
         return await knex("postagem_curtidas").where({postagem_id: idPostagem}).andWhere({usuario_id: idUsuario});
         
@@ -40,8 +44,8 @@ class postagens {
         return await knex("postagem_curtidas").insert({postagem_id: idPostagem, usuario_id: idUsuario});
     }
 
-    static async comentarPostagem(idPostagem, idUsuario, comentario){
-        return await knex("postagem_comentarios").insert({postagem_id: idPostagem, usuario_id: idUsuario, texto: comentario});
+    static async comentar(idPostagem, idUsuario, comentario){
+        return await knex("postagem_comentarios").insert({postagem_id: idPostagem, usuario_id: idUsuario, texto: comentario}).returning("*") ? true : false;
     }
 }
 
