@@ -47,16 +47,36 @@ class postagens {
     }
 
     static async listar(){
-        const postagens = await knex("postagens");
+        const postagens = await knex("postagens")
+        .join("usuarios", "postagens.usuario_id", "usuarios.id")
+        .select("postagens.id", "usuarios.avatar", "usuarios.nome", "usuarios.verificado","postagens.texto", "postagens.data");
 
         for(const postagem of postagens){
             postagem.imagens = await this.agruparFotos(postagem.id);
+            postagem.curtidas = await this.contarCurtidas(postagem.id);
+            postagem.comentarios = await this.agruparComentarios(postagem.id);
         }
         return postagens;
     }
 
     static async agruparFotos(idPostagem){
-        return await knex("postagem_fotos").join("postagens", "postagem_fotos.postagem_id", "postagens.id").select("imagem").where({"postagem_id": idPostagem});
+        return await knex("postagem_fotos")
+        .join("postagens", "postagem_fotos.postagem_id", "postagens.id")
+        .select("imagem")
+        .where({"postagem_id": idPostagem});
+    }
+
+    static async contarCurtidas(idPostagem){
+        const contador =  await knex("postagem_curtidas").count().where({postagem_id: idPostagem});
+        const [{ count }] = contador;
+        return count;
+    }
+
+    static async agruparComentarios(idPostagem){
+        return await knex("postagem_comentarios")
+        .join("usuarios", "postagem_comentarios.usuario_id", "usuarios.id")
+        .select("usuarios.username", "postagem_comentarios.texto")
+        .where({postagem_id: idPostagem});
     }
 }
 
