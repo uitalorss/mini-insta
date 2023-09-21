@@ -4,10 +4,6 @@ const { criptografarSenha } = require("../uteis/criptografarSenha");
 
 async function cadastroUsuarios(req, res){
     const {nome, avatar, username, password, email, site, bio, telefone, genero} = req.body;
-
-    if(!nome || !username || !password || !email){
-        return res.status(400).json({message: "Preencha os campos obrigatórios."});
-    }
     try {
         if(!await usuarios.verificarEmailValido(email)){
             return res.status(400).json({message: "Já existe um usuário com esse email."});

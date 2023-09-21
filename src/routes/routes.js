@@ -7,11 +7,14 @@ const { fazerPostagem } = require("../controladores/fazerPostagem");
 const { curtirPostagem } = require("../controladores/curtirPostagem");
 const { comentarPostagem } = require("../controladores/comentarPostagem");
 const { listarPostagens } = require("../controladores/listarPostagens");
+const cadastrarUsuarioSchema = require("../schemas/cadastrarUsuarioSchema");
+const validarRequisicao = require("../intermediários/validarRequisicao");
+const logarUsuarioSchema = require("../schemas/logarUsuarioSchema");
 
 const router = Router();
 
-router.post("/cadastro", cadastroUsuarios);
-router.post("/login", logarUsuario);
+router.post("/cadastro", validarRequisicao(cadastrarUsuarioSchema), cadastroUsuarios);
+router.post("/login", validarRequisicao(logarUsuarioSchema) ,logarUsuario);
 router.get("/usuario", autenticarUsuario, exibirUsuario);
 
 router.post("/post", autenticarUsuario, fazerPostagem);
